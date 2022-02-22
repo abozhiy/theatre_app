@@ -83,7 +83,7 @@ describe Performance do
         subject.start_date = "2022-01-18"
         subject.end_date = "2022-01-30"
 
-        expect { subject.save }.to change(Performance, :count)
+        expect { subject.save }.to change(Performance, :count).by(1)
       end
     end
   end
