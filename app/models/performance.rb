@@ -4,13 +4,20 @@ class Performance < ApplicationRecord
   validate :no_overlap
 
   scope :actual_list, -> { where('end_date >= ?', Date.current) }
-  scope :overlapping, -> (date) { where(':date BETWEEN start_date AND end_date', date: date) }
+
+  scope :overlapping, -> (dates) do
+    query = <<-SQL
+      (:from BETWEEN performances.start_date AND performances.end_date OR
+      :to BETWEEN performances.start_date AND performances.end_date) OR 
+      (:from <= performances.start_date AND :to >= performances.end_date)
+    SQL
+    where(query, from: dates[:from], to: dates[:to])
+  end
 
 
   def no_overlap
     msg = 'The performance has already been scheduled for the specified date'
-    errors.add(:start_date, msg) if Performance.overlapping(start_date).any?
-    errors.add(:end_date, msg) if Performance.overlapping(end_date).any?
+    errors.add(:start_date, msg) if Performance.overlapping({from: start_date, to: end_date}).any?
   end
 
   def serializable_hash(_options = {})

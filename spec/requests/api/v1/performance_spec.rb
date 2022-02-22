@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'API V1 performances', type: :request do
+describe 'API V1 performances', type: :request do
 
   describe "GET /api/v1/performances" do
     let!(:performance_record) { FactoryGirl.create(:performance) }
