@@ -77,5 +77,14 @@ describe Performance do
         expect { subject.save }.not_to change(Performance, :count)
       end
     end
+
+    context "in case the dates of new performance don't overlap dates of existing performance" do
+      it do
+        subject.start_date = "2022-01-18"
+        subject.end_date = "2022-01-30"
+
+        expect { subject.save }.to change(Performance, :count)
+      end
+    end
   end
 end
